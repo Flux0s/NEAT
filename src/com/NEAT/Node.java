@@ -1,45 +1,30 @@
 package com.NEAT;
 
-import java.util.ArrayList;
-
 /**
- * Created by Jason on 5/27/2016.
+ * Represents a node in the Neural Network
+ * In this representation the node is not represented as a gene in the genome
  */
 
-class Node extends Gene {
-    public static final int INPUT = 0;
-    public static final int HIDDEN = 1;
-    public static final int OUTPUT = 2;
-    private int type;
+//TODO: consider implementing each node as a thread
+class Node {
+    private double value;
+    public boolean activated;
 
     // Used to create a new Node gene that is unique
-    public Node(int nodeType) {
-        super();
-        type = nodeType;
+    public Node() {
+        value = 0.0;
+        activated = false;
     }
 
-    // Used to create a gene that has already been evolved by the GE
-    public Node(int nodeType, int innovation) {
-        super(innovation);
-        type = nodeType;
+    //Applies a Sigmoidal activation function to the input
+    public double activate(double in) {
+        activated = true;
+        return (value = 1 / (1 + Math.pow(Math.E, -4.9 * in)));
     }
 
-    public double activate(ArrayList<Integer> in) {
-        double sum = 0;
-        for (int i = 0; i < in.size(); i++) {
-            sum += in.get(i);
-        }
-        Integer i = 1;
-        value = 1 / (1 + Math.pow(Math.E, -4.9 * sum));
+    //Returns the value that the
+    public double getValue() {
         return (value);
-    }
-
-    public int getType() {
-        return (type);
-    }
-
-    public void run() {
-
     }
 
 }

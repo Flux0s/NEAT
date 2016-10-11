@@ -2,6 +2,7 @@ package com.NEAT;
 
 /**
  * Created by Jason on 5/27/2016.
+ * TODO: Create a list genomes mapped to their corresponding finesses
  */
 
 import java.util.ArrayList;
