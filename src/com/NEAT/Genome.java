@@ -8,50 +8,52 @@ import java.util.ArrayList;
 import java.util.Map;
 
 class Genome {
-    private Map<Node, ArrayList<Link>> genes;
+	//This is a representation of the genome including the nodes
+	//This means that the actual manipulable genome must be created from this TODO: Create a genome creation method
+	private Map<Node, ArrayList<Link>> genes;
 
-    public Genome(ArrayList<Node> input) {
+	public Genome() {
+		//TODO:
+	}
 
-    }
+	// Used during crossover
+	public Genome(ArrayList<Link> geneIn, ArrayList<Node> nodeIn) {
 
-    // Used during crossover
-    public Genome(ArrayList<Link> geneIn, ArrayList<Node> nodeIn) {
-
-    }
+	}
 
 
-    // Use if mutation has been determined as true
-    public Genome(Genome base, boolean isLink) {
-    }
+	// Use if mutation has been determined as true
+	public Genome(Genome base, boolean isLink) {
+	}
 
-    public ArrayList<Double> calculateOutput(ArrayList<Double> inputs) {
-    }
+	public ArrayList<Double> calculateOutput(ArrayList<Double> inputs) {
+	}
 
-    public int size() {
-    }
+	public int size() {
+	}
 
-    private ArrayList<Link> getGenes() {
-    }
+	private ArrayList<Link> getGenes() {
+	}
 
-    private ArrayList<Node> getNodes() {
-    }
+	private ArrayList<Node> getNodes() {
+	}
 
-    public double getFitness() {
-    }
+	public double getFitness() {
+	}
 
-    public void setFitness(double fitIn) {
-    }
+	public void setFitness(double fitIn) {
+	}
 
-    public ArrayList<Node> getOutput() {
-    }
+	public ArrayList<Node> getOutput() {
+	}
 
-    private boolean outputEmpty() {
-    }
+	private boolean outputEmpty() {
+	}
 
-    private void clearNetwork() {
-    }
+	private void clearNetwork() {
+	}
 
-    private static int newGene() {
-    }
+	private static int newGene() {
+	}
 
 }
