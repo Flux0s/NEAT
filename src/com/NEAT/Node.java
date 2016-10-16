@@ -1,8 +1,6 @@
 package com.NEAT;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Represents a node in the Neural Network
@@ -10,12 +8,13 @@ import java.util.LinkedList;
  */
 
 //TODO: consider implementing each node as a thread
-class Node {
+class Node implements Runnable {
 	private double value[][];
 	public boolean activated;
 
 	// Used to create a new Node gene that is unique
 	public Node() {
+		value = new double[][];
 		for (int i = 0; i < value.length; i++)
 			for (int j = 0; j < value[0].length; j++)
 				value[i][j] = 0.0;
@@ -41,4 +40,8 @@ class Node {
 		return (value);
 	}
 
+	@Override
+	public void run() {
+
+	}
 }
