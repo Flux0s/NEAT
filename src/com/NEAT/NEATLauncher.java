@@ -163,8 +163,8 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 		if (source == program2)
 			program1.setSelected(false);
 		if (source == button && button.getText().equals("Run")) {
-			if (!program1.isSelected() && !program2.isSelected()) {
-				updateConsole("Please Select the type of input below.");
+			if (/*!program1.isSelected() && */!program2.isSelected()) {
+				updateConsole(/*"Please Select the type of input below. "*/ "Currently only the screen input is implemented");
 				return;
 			}
 			String quickPath = ((String) runningPaths.getSelectedItem()).trim();
@@ -195,7 +195,7 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 			AI = new NEATAI(10, 2, 5, null);
 			NEATBattleship NEATAI = new NEATBattleship();
 			PlayerEvaluator evaluator = new PlayerEvaluator(NEATAI, Integer.MAX_VALUE);
-		} else if (inputProgram == 2){
+		} else if (inputProgram == 2) {
 			AI = new NEATAI(10, 2, 5, null);
 		}
 	}

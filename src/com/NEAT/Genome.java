@@ -13,7 +13,6 @@ class Genome {
 	private Map<Node, ArrayList<Link>> genes;
 
 	public Genome() {
-		//TODO:
 	}
 
 	// Used during crossover
@@ -43,17 +42,4 @@ class Genome {
 
 	public void setFitness(double fitIn) {
 	}
-
-	public ArrayList<Node> getOutput() {
-	}
-
-	private boolean outputEmpty() {
-	}
-
-	private void clearNetwork() {
-	}
-
-	private static int newGene() {
-	}
-
 }

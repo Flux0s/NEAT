@@ -1,33 +1,23 @@
 package com.NEAT;
 
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
-class NEATAI<T> {
+class NEATAI implements Runnable {
+	public static boolean stop;
 	private String path;
-	private ArrayList<ArrayList<Integer>> runningInput;
 	private ArrayList<Generation> generations;
-	private int inputs, outputs, population;
-	private ScreenInput screen;
+	private static final int POPULATION = 20;
+	private char[] outputs;
+	private Rectangle screen;
 	private static final String SIGNATURE = "82356987109892847569812709846840957890879283123050399846924597293879";
 
-	NEATAI(int numInputs, int numOutputs, int populationSize, String filePath) {
-		inputs = numInputs;
-		outputs = numOutputs;
-		population = populationSize;
+	NEATAI(Rectangle screenIn, char output[], String filePath) {
+		stop = false;
+		outputs = output;
 		path = filePath;
 		generations = new ArrayList<Generation>();
-		runningInput = new ArrayList<ArrayList<Integer>>();
-		for (int i = 0; i < numInputs; i++)
-			runningInput.add(new ArrayList<Integer>());
-	}
-
-	public void updateInput(int[][] inputs) {
-		runningInput = new ArrayList<ArrayList<Integer>>();
-		for (int i = 0; i < inputs.length; i++)
-			for (int j = 0; j < inputs[0].length; j++) {
-				runningInput.get(i).add(inputs[i][j]);
-			}
 	}
 
 	private static boolean isSavedNEAT(File testFile) {
@@ -72,5 +62,13 @@ class NEATAI<T> {
 				oStream.close();
 		}
 		return (created);
+	}
+
+	@Override
+	public void run() {
+		while (!stop) {
+			generations.add(new Generation());
+			generations.get(generations.size() - 1).run();
+		}
 	}
 }
