@@ -1,9 +1,5 @@
 package com.NEAT;
 
-import com.BattleshipAI.ComputerBattleshipPlayer;
-import com.BattleshipAI.PlayerEvaluator;
-import com.BattleshipAI.Position;
-
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
@@ -22,7 +18,9 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 	private final JComboBox<String> runningPaths;
 	private static File startupPaths;
 
-
+	private boolean selectingScreen, selectingKeys;
+	private ArrayList<Character> keys;
+	private Rectangle screenCapture;
 	private final String DEFAULT_FILE = ("DefaultFile.txt");
 
 	private NEATAI AI;
@@ -177,27 +175,46 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 				//If the user wants to use the built in battleship game
 				updateConsole("File path has been confirmed.\nApplication Started using '" + program1.getText() + "' as input.");
 				button.setText("Stop Program");
-				StartNEAT(1);
+				StartNEAT();
 			} else if (program2.isSelected()) {
 				updateConsole("File path has been confirmed.\nApplication Started using '" + program2.getText() + "' as input.");
 				button.setText("Stop Program");
-				StartNEAT(2);
-				//begin program here with screen capture as input
+				StartNEAT(selectScreen(), selectOutput(), (String) runningPaths.getSelectedItem());
 			}
 		} else if (source == button && !button.getText().equals("Run")) {
 			updateConsole("Saving and Stopping Program Now!");
+			NEATAI.stop = true;
 			System.exit(0);
 		}
 	}
 
-	private void StartNEAT(int inputProgram) {
-		if (inputProgram == 1) {
-			AI = new NEATAI(10, 2, 5, null);
-			NEATBattleship NEATAI = new NEATBattleship();
-			PlayerEvaluator evaluator = new PlayerEvaluator(NEATAI, Integer.MAX_VALUE);
-		} else if (inputProgram == 2) {
-			AI = new NEATAI(10, 2, 5, null);
-		}
+	private Rectangle selectScreen() {
+		selectingScreen = true;
+		updateConsole("");
+		//noinspection StatementWithEmptyBody
+		while (selectingScreen) ;
+		return (screenCapture);
+	}
+
+	private char[] selectOutput() {
+		selectingKeys = true;
+		updateConsole("");
+		//noinspection StatementWithEmptyBody
+		while (selectingKeys) ;
+		char[] outs = new char[keys.size()];
+		for (int i = 0; i < keys.size(); i++)
+			outs[i] = keys.get(i);
+		return (outs);
+	}
+
+	private void StartNEAT() {
+//		AI = new NEATAI(10, 2, 5, null);
+//		NEATBattleship NEATAI = new NEATBattleship();
+//		PlayerEvaluator evaluator = new PlayerEvaluator(NEATAI, Integer.MAX_VALUE);
+	}
+
+	private void StartNEAT(Rectangle section, char[] output, String path) {
+		AI = new NEATAI(section, output, path);
 	}
 
 	private static void updatePathList(String newFilePath) {
@@ -224,7 +241,7 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		JComponent source = (JComponent) e.getSource();
-		if (source == runningPaths.getEditor().getEditorComponent() && e.getKeyChar() == KeyEvent.VK_ENTER) {
+		if (e.getKeyChar() == KeyEvent.VK_ENTER && source == runningPaths.getEditor().getEditorComponent()) {
 			File testFile;
 			String quickPath = ((String) runningPaths.getSelectedItem()).trim();
 			if (quickPath.equals(""))
@@ -241,6 +258,19 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 				updateConsole("List of Files updated!");
 			} else
 				updateConsole("This file is not a saved NEAT file.");
+		} else if (selectingKeys) {
+			if ((e.getKeyChar() >= '0' && e.getKeyChar() <= '9') || (e.getKeyChar() >= 'a' && e.getKeyChar() <= 'z'))
+				keys.add(e.getKeyChar());
+			else if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+				updateConsole(keys.get(keys.size() - 1) + " Removed from list of outputs");
+				keys.remove(keys.size() - 1);
+				String outs = ("Outputs so far: ");
+				for (Character key : keys) outs += key + " ";
+				updateConsole(outs);
+			} else if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+				updateConsole("Output selection finished.");
+				selectingKeys = false;
+			}
 		}
 
 	}
@@ -249,23 +279,24 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 		NEATConsole.append("\n" + update + "\n");
 	}
 
-	public class NEATBattleship extends ComputerBattleshipPlayer {
-		public NEATBattleship() {
-			super("NEAT Battleship");
+	/*
+		public class NEATBattleship extends ComputerBattleshipPlayer {
+			public NEATBattleship() {
+				super("NEAT Battleship");
+			}
+
+			public void updatePlayer(Position pos, boolean hit, char initial, String boatName, boolean sunk, boolean gameOver, boolean tooManyTurns, int turns) {
+				updateGrid(pos, hit, initial);
+				updateConsole(peggs.toString());
+			}
+
+			public Position shoot() {
+				//NEAT kicks-in here
+				return (null);
+			}
+
 		}
-
-		public void updatePlayer(Position pos, boolean hit, char initial, String boatName, boolean sunk, boolean gameOver, boolean tooManyTurns, int turns) {
-			updateGrid(pos, hit, initial);
-			updateConsole(peggs.toString());
-		}
-
-		public Position shoot() {
-			//NEAT kicks-in here
-			return (null);
-		}
-
-	}
-
+	*/
 	public static void main(String[] args) throws IOException {
 		NEATLauncher launcher = new NEATLauncher();
 	}

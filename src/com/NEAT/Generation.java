@@ -14,6 +14,7 @@ class Generation implements Runnable {
 	@Override
 	public void run() {
 		while (!NEATAI.stop) {
+
 		}
 	}
 }

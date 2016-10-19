@@ -42,8 +42,8 @@ class NEATAI implements Runnable {
 		return (wasSigned);
 	}
 
-	static File createNEATSaveFile(String pathTocreate) {
-		File created = new File(pathTocreate);
+	static File createNEATSaveFile(String pathToCreate) {
+		File created = new File(pathToCreate);
 		PrintWriter oStream = null;
 		if (created.exists()) {
 			if (!NEATAI.isSavedNEAT(created))
@@ -64,11 +64,40 @@ class NEATAI implements Runnable {
 		return (created);
 	}
 
+	private void save() {
+		File NEAT = new File(path);
+		PrintWriter oStream = null;
+		try {
+			oStream = new PrintWriter(new FileWriter(NEAT));
+			oStream.println(generations.size() + "\n");
+
+		} catch (IOException ignored) {
+		} finally {
+			if (oStream != null)
+				oStream.close();
+		}
+
+	}
+
+	//Loads a NEATAI from the specified path
+	private void load() {
+		File NEAT = new File(path);
+	}
+
 	@Override
 	public void run() {
 		while (!stop) {
 			generations.add(new Generation());
 			generations.get(generations.size() - 1).run();
 		}
+		save();
+	}
+
+	//This returns the number of generations followed by each generation with a space between them
+	public String toString() {
+		String out = (generations.size() + "\n");
+		for (int i = 0; i < generations.size(); i++)
+			out += (generations.get(i) + "\n");
+		return (out);
 	}
 }
