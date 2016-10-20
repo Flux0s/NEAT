@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 class NEATAI implements Runnable {
-	public static boolean stop;
+	public static boolean save, finished;
 	private String path;
 	private ArrayList<Generation> generations;
 	private static final int POPULATION = 20;
@@ -14,7 +14,7 @@ class NEATAI implements Runnable {
 	private static final String SIGNATURE = "82356987109892847569812709846840957890879283123050399846924597293879";
 
 	NEATAI(Rectangle screenIn, char output[], String filePath) {
-		stop = false;
+		save = false;
 		outputs = output;
 		path = filePath;
 		generations = new ArrayList<Generation>();
@@ -86,11 +86,12 @@ class NEATAI implements Runnable {
 
 	@Override
 	public void run() {
-		while (!stop) {
-			generations.add(new Generation());
-			generations.get(generations.size() - 1).run();
-		}
-		save();
+//		while (!save) {
+//			generations.add(new Generation());
+//			generations.get(generations.size() - 1).run();
+//		}
+//		save();
+//		finished = true;
 	}
 
 	//This returns the number of generations followed by each generation with a space between them

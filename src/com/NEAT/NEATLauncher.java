@@ -1,5 +1,7 @@
 package com.NEAT;
 
+import com.BattleshipAI.ComputerBattleshipPlayer;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
@@ -18,12 +20,13 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 	private final JComboBox<String> runningPaths;
 	private static File startupPaths;
 
-	private boolean selectingScreen, selectingKeys;
-	private ArrayList<Character> keys;
-	private Rectangle screenCapture;
 	private final String DEFAULT_FILE = ("DefaultFile.txt");
 
 	private NEATAI AI;
+	private static Thread t1;
+	Rectangle screenCapture;
+	private boolean selectingKeys;
+	private ArrayList<Character> keys;
 
 	private NEATLauncher() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -50,11 +53,11 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 		NEATConsole.setWrapStyleWord(true);
 		NEATConsole.setLineWrap(true);
 		NEATConsole.setEditable(false);
-		//noinspection SuspiciousNameCombination
 		NEATConsole.setMinimumSize(new Dimension(WINDOW_WIDTH - 30, WINDOW_WIDTH));
 		NEATConsole.setFont(new Font("Source Code Pro", Font.PLAIN, 12));
-		NEATConsole.setAutoscrolls(true);
 		NEATConsole.setSelectedTextColor(Color.GRAY);
+		NEATConsole.setFocusable(true);
+		NEATConsole.addKeyListener(this);
 		JScrollPane consoleScroller = new JScrollPane(NEATConsole);
 		consoleScroller.setPreferredSize(new Dimension(NEATConsole.getMinimumSize().width, NEATConsole.getMinimumSize().height));
 		consoleScroller.setWheelScrollingEnabled(true);
@@ -85,6 +88,9 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 		add(p3);
 		add(p4);
 		setVisible(true);
+
+		keys = new ArrayList<Character>();
+		keys.add(' ');
 	}
 
 	private void populateFilePaths(JComboBox<String> listToPop) {
@@ -160,61 +166,45 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 			program2.setSelected(false);
 		if (source == program2)
 			program1.setSelected(false);
-		if (source == button && button.getText().equals("Run")) {
-			if (/*!program1.isSelected() && */!program2.isSelected()) {
-				updateConsole(/*"Please Select the type of input below. "*/ "Currently only the screen input is implemented");
-				return;
+		if (source == button) {
+			if (button.getText().equals("Run")) {
+				if (!program1.isSelected() && !program2.isSelected()) {
+					updateConsole("Please Select the type of input below.");
+					return;
+				}
+				String quickPath = ((String) runningPaths.getSelectedItem()).trim();
+				if (quickPath.equals(""))
+					quickPath = DEFAULT_FILE;
+				testFile = NEATAI.createNEATSaveFile(quickPath);
+				if (testFile == null) {
+					updateConsole("Please enter or select a valid NEAT save file");
+				} else if (program1.isSelected()) {
+					//If the user wants to use the built in battleship game
+//					updateConsole("File path has been confirmed.\nApplication Started using '" + program1.getText() + "' as input.");
+//					button.setText("Stop Program");
+//					StartNEAT();
+					updateConsole("This option is currently unsupported.");
+				} else if (program2.isSelected()) {
+					updateConsole("File path has been confirmed.\nApplication Started using '" + program2.getText() + "' as input.");
+					NEATConsole.requestFocusInWindow();
+					t1.start();
+					button.setText("Quit");
+				}
+			} else {
+				updateConsole("Saving and Stopping Program Now!");
+//				NEATAI.save = true;
+//				while (!NEATAI.finished) ;
+				System.exit(0);
 			}
-			String quickPath = ((String) runningPaths.getSelectedItem()).trim();
-			if (quickPath.equals(""))
-				quickPath = DEFAULT_FILE;
-			testFile = NEATAI.createNEATSaveFile(quickPath);
-			if (testFile == null) {
-				updateConsole("Please enter or select a valid NEAT save file");
-			} else if (program1.isSelected()) {
-				//If the user wants to use the built in battleship game
-				updateConsole("File path has been confirmed.\nApplication Started using '" + program1.getText() + "' as input.");
-				button.setText("Stop Program");
-				StartNEAT();
-			} else if (program2.isSelected()) {
-				updateConsole("File path has been confirmed.\nApplication Started using '" + program2.getText() + "' as input.");
-				button.setText("Stop Program");
-				StartNEAT(selectScreen(), selectOutput(), (String) runningPaths.getSelectedItem());
-			}
-		} else if (source == button && !button.getText().equals("Run")) {
-			updateConsole("Saving and Stopping Program Now!");
-			NEATAI.stop = true;
-			System.exit(0);
 		}
 	}
 
-	private Rectangle selectScreen() {
-		selectingScreen = true;
-		updateConsole("");
-		//noinspection StatementWithEmptyBody
-		while (selectingScreen) ;
-		return (screenCapture);
+	private synchronized void setScreenCapture(Rectangle screenCap) {
+		screenCapture = screenCap;
 	}
 
-	private char[] selectOutput() {
+	private synchronized void selectKeys() {
 		selectingKeys = true;
-		updateConsole("");
-		//noinspection StatementWithEmptyBody
-		while (selectingKeys) ;
-		char[] outs = new char[keys.size()];
-		for (int i = 0; i < keys.size(); i++)
-			outs[i] = keys.get(i);
-		return (outs);
-	}
-
-	private void StartNEAT() {
-//		AI = new NEATAI(10, 2, 5, null);
-//		NEATBattleship NEATAI = new NEATBattleship();
-//		PlayerEvaluator evaluator = new PlayerEvaluator(NEATAI, Integer.MAX_VALUE);
-	}
-
-	private void StartNEAT(Rectangle section, char[] output, String path) {
-		AI = new NEATAI(section, output, path);
 	}
 
 	private static void updatePathList(String newFilePath) {
@@ -241,27 +231,29 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		JComponent source = (JComponent) e.getSource();
-		if (e.getKeyChar() == KeyEvent.VK_ENTER && source == runningPaths.getEditor().getEditorComponent()) {
-			File testFile;
-			String quickPath = ((String) runningPaths.getSelectedItem()).trim();
-			if (quickPath.equals(""))
-				quickPath = DEFAULT_FILE;
-			for (int i = 0; i < runningPaths.getItemCount(); i++)
-				if ((runningPaths.getItemAt(i)).equals(quickPath)) {
-					updateConsole("This path has already been listed.");
-					return;
-				}
-			testFile = NEATAI.createNEATSaveFile(quickPath);
-			if (testFile != null) {
-				runningPaths.addItem(testFile.getPath());
-				updatePathList(testFile.getPath());
-				updateConsole("List of Files updated!");
-			} else
-				updateConsole("This file is not a saved NEAT file.");
+		if (source == runningPaths.getEditor().getEditorComponent()) {
+			if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+				File testFile;
+				String quickPath = ((String) runningPaths.getSelectedItem()).trim();
+				if (quickPath.equals(""))
+					quickPath = DEFAULT_FILE;
+				for (int i = 0; i < runningPaths.getItemCount(); i++)
+					if ((runningPaths.getItemAt(i)).equals(quickPath)) {
+						updateConsole("This path has already been listed.");
+						return;
+					}
+				testFile = NEATAI.createNEATSaveFile(quickPath);
+				if (testFile != null) {
+					runningPaths.addItem(testFile.getPath());
+					updatePathList(testFile.getPath());
+					updateConsole("List of Files updated!");
+				} else
+					updateConsole("This file is not a saved NEAT file.");
+
+
+			}
 		} else if (selectingKeys) {
-			if ((e.getKeyChar() >= '0' && e.getKeyChar() <= '9') || (e.getKeyChar() >= 'a' && e.getKeyChar() <= 'z'))
-				keys.add(e.getKeyChar());
-			else if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+			if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
 				updateConsole(keys.get(keys.size() - 1) + " Removed from list of outputs");
 				keys.remove(keys.size() - 1);
 				String outs = ("Outputs so far: ");
@@ -270,17 +262,29 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 			} else if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 				updateConsole("Output selection finished.");
 				selectingKeys = false;
+				char[] outs = new char[keys.size()];
+				for (int i = 1; i < keys.size(); i++)
+					outs[i] = keys.get(i);
+				AI = new NEATAI(screenCapture, outs, (String) runningPaths.getSelectedItem());
+//				AI.start();
+			} else {
+				keys.add(e.getKeyChar());
+				String outs = ("Outputs so far: ");
+				for (Character key : keys) outs += key + " ";
+				updateConsole(outs);
 			}
 		}
 
 	}
 
-	private void updateConsole(String update) {
+	private synchronized void updateConsole(String update) {
 		NEATConsole.append("\n" + update + "\n");
+		NEATConsole.setCaretPosition(NEATConsole.getDocument().getLength());
 	}
 
-	/*
-		public class NEATBattleship extends ComputerBattleshipPlayer {
+
+	public class NEATBattleship extends ComputerBattleshipPlayer {
+			/*
 			public NEATBattleship() {
 				super("NEAT Battleship");
 			}
@@ -294,10 +298,37 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 				//NEAT kicks-in here
 				return (null);
 			}
+			*/
+	}
 
-		}
-	*/
 	public static void main(String[] args) throws IOException {
 		NEATLauncher launcher = new NEATLauncher();
+		t1 = new Thread() {
+			public void run() {
+				Rectangle screenCap = null;
+				try {
+					Point p1 = null, p2 = null;
+					launcher.updateConsole("Put your cursor in the TOP LEFT corner of the section of the screen that you'd like to select this position will be saved in: ");
+					for (int i = 5; i > 0; i--) {
+						launcher.updateConsole(i + "");
+						Thread.sleep(1000);
+					}
+					p1 = MouseInfo.getPointerInfo().getLocation();
+
+
+					launcher.updateConsole("Put your cursor in the BOTTOM RIGHT corner of the section of the screen that you'd like to select this position will be saved in: ");
+					for (int i = 5; i > 0; i--) {
+						launcher.updateConsole(i + "");
+						Thread.sleep(1000);
+					}
+					p2 = MouseInfo.getPointerInfo().getLocation();
+					screenCap = new Rectangle(p1, new Dimension(p2.x - p1.x, p2.y - p1.y));
+				} catch (InterruptedException ignore) {
+				}
+				launcher.setScreenCapture(screenCap);
+				launcher.selectKeys();
+				launcher.updateConsole("Press any letter or number that should be used as output for the NEAT\nDELETE to remove the last entry\nENTER to finish: ");
+			}
+		};
 	}
 }
