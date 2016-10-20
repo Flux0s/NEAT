@@ -282,7 +282,7 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 		NEATConsole.setCaretPosition(NEATConsole.getDocument().getLength());
 	}
 
-
+	//Temporarily unimplemented
 	public class NEATBattleship extends ComputerBattleshipPlayer {
 			/*
 			public NEATBattleship() {
