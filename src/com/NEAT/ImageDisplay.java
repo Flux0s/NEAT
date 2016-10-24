@@ -5,9 +5,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-/**
- *
- */
 public class ImageDisplay extends JFrame {
 
 	public ImageDisplay(Rectangle screen) {
