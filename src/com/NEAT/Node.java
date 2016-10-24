@@ -110,7 +110,7 @@ class Node extends Thread {
 		return activated;
 	}
 
-	public boolean setActivated(boolean state) {
+	public void setActivated(boolean state) {
 		activated = state;
 	}
 }

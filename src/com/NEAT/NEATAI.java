@@ -8,14 +8,13 @@ class NEATAI extends Thread {
 	public static boolean save;
 	private String path;
 	private ArrayList<Generation> generations;
-	public static final int POPULATION = 20, NUMINPUTNODES = 20;
+	public static final int POPULATION = 20, NUMINPUTNODES = 16;
 	private char[] outputs;
 	private Rectangle screen;
 	private static final String SIGNATURE = "82356987109892847569812709846840957890879283123050399846924597293879";
 
 	NEATAI(Rectangle screenIn, char output[], String filePath) {
 		save = false;
-
 		screen = screenIn;
 		//This ensures that the rectangle can be split in half evenly, both vertically and horizontally
 		if (screen.height % 2 != 0)
@@ -86,16 +85,16 @@ class NEATAI extends Thread {
 
 	//Loads a NEATAI from the specified path
 	private void load(File NEAT) {
-//		TODO: code the load method.
+		//TODO: code the load method.
 	}
 
 	@Override
 	public void run() {
 		File NEAT = new File(path);
-		if (NEATAI.isSavedNEAT(NEAT))
-			load(NEAT);
-		else
-			generations.add(new Generation(screen, outputs));
+//		if (NEATAI.isSavedNEAT(NEAT))
+//			load(NEAT);
+//		else
+		generations.add(new Generation(screen, outputs));
 		while (!save) {
 			generations.get(generations.size() - 1).run();
 			try {

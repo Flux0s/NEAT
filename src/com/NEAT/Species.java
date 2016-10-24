@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Species {
+	/*
 	private static final double SPECIATIONTHRESHOLD = 3.0;
 	private static final double C1 = 3.0;
 	private static final double C2 = 3.0;
@@ -170,5 +171,5 @@ public class Species {
 		W /= N - (D + E);
 		double diffrence = (C1 * E / N) + (C2 * D / N) + C3 * W;
 		return (diffrence);
-	}
+	}*/
 }

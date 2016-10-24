@@ -201,6 +201,7 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 			} else {
 				updateConsole("Saving and Stopping Program Now!");
 				try {
+					NEATAI.save = true;
 					AI.join();
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
@@ -278,7 +279,7 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 				for (int i = 1; i < keys.size(); i++)
 					outs[i] = keys.get(i);
 				AI = new NEATAI(screenCapture, outs, (String) runningPaths.getSelectedItem());
-//				AI.start();
+				AI.start();
 			} else {
 				keys.add(e.getKeyChar());
 				String outs = ("Outputs so far: ");

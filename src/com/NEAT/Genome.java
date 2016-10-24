@@ -5,6 +5,7 @@ package com.NEAT;
  */
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,7 +27,9 @@ class Genome {
 		while (it.hasNext()) {
 			links.add((Link) it.next());
 		}
-		ArrayList<Rectangle> optimal = findOptimalInputs();
+		ArrayList<Rectangle> screenSections = new ArrayList<Rectangle>();
+		screenSections.add(screen);
+		ArrayList<Rectangle> optimal = findOptimalInputs(screenSections);
 		for (int i = 0; i < optimal.size(); i++)
 			genes.put(new Node(Node.INPUT, optimal.get(i)), null);
 		for (int i = 0; i < outputKeys.length; i++) {
@@ -34,8 +37,30 @@ class Genome {
 		}
 	}
 
-	private ArrayList<Rectangle> findOptimalInputs() {
+	private ArrayList<Rectangle> findOptimalInputs(ArrayList<Rectangle> big) {
 		//TODO: Determine the optimal size and positioning of the specified number of screen divisions.
+		if (big.size() < NEATAI.NUMINPUTNODES)
+			return (findOptimalInputs(splitRectangles(big)));
+		else
+			return (big);
+	}
+
+	private ArrayList<Rectangle> splitRectangles(ArrayList<Rectangle> big) {
+		ArrayList<Rectangle> small = new ArrayList<Rectangle>();
+		//If the height needs to be divided in two
+		if (big.get(0).getHeight() > big.get(0).getWidth())
+			for (int i = 0; i < big.size(); i++) {
+				Rectangle rec = big.get(i);
+				small.add(new Rectangle(rec.x, rec.y, rec.width, rec.height / 2));
+				small.add(new Rectangle(rec.x, rec.y + rec.height / 2, rec.width, rec.height / 2));
+			}
+		else
+			for (int i = 0; i < big.size(); i++) {
+				Rectangle rec = big.get(i);
+				small.add(new Rectangle(rec.x, rec.y, rec.width / 2, rec.height));
+				small.add(new Rectangle(rec.x + rec.width / 2, rec.y, rec.width / 2, rec.height));
+			}
+		return (small);
 	}
 
 	// Used during crossover
