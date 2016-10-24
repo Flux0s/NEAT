@@ -15,8 +15,13 @@ class NEATAI extends Thread {
 
 	NEATAI(Rectangle screenIn, char output[], String filePath) {
 		save = false;
-		//TODO: reset the selected screen size to be easily divided into the specified number of sections.
+
 		screen = screenIn;
+		//This ensures that the rectangle can be split in half evenly, both vertically and horizontally
+		if (screen.height % 2 != 0)
+			screen = new Rectangle(screen.x, screen.y, screen.width, screen.height - 1);
+		if (screen.width % 2 != 0)
+			screen = new Rectangle(screen.x, screen.y, screen.width - 1, screen.height);
 		outputs = output;
 		path = filePath;
 		generations = new ArrayList<Generation>();
