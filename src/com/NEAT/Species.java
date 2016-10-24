@@ -9,7 +9,6 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Species {
-	/*
 	private static final double SPECIATIONTHRESHOLD = 3.0;
 	private static final double C1 = 3.0;
 	private static final double C2 = 3.0;
@@ -124,9 +123,10 @@ public class Species {
 	}
 
 	private void enableGenes(Genome G) {
+		ArrayList<Link> links = G.getGenes();
 		for (int i = 0; i < G.size(); i++)
 			if (Math.random() <= ENABLECHANCE)
-				G.get(i).enable();
+				links.get(i).setEnabled(true);
 	}
 
 	private double fittestWeight(int innovation) {
@@ -171,5 +171,5 @@ public class Species {
 		W /= N - (D + E);
 		double diffrence = (C1 * E / N) + (C2 * D / N) + C3 * W;
 		return (diffrence);
-	}*/
+	}
 }

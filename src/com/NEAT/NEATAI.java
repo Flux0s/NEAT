@@ -5,7 +5,8 @@ import java.io.*;
 import java.util.ArrayList;
 
 class NEATAI extends Thread {
-	public static boolean save;
+	public static int state;
+	public static final int SAVE = 0, PREPARING = 1, PLAYING = 2, GETFITNESS = 3;
 	private String path;
 	private ArrayList<Generation> generations;
 	public static final int POPULATION = 20, NUMINPUTNODES = 16;
@@ -14,7 +15,7 @@ class NEATAI extends Thread {
 	private static final String SIGNATURE = "82356987109892847569812709846840957890879283123050399846924597293879";
 
 	NEATAI(Rectangle screenIn, char output[], String filePath) {
-		save = false;
+		state = PREPARING;
 		screen = screenIn;
 		//This ensures that the rectangle can be split in half evenly, both vertically and horizontally
 		if (screen.height % 2 != 0)

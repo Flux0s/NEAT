@@ -76,13 +76,9 @@ class Node extends Thread {
 						avg += value[i][j];
 				avg /= value.length * value[0].length;
 				if (avg < 0.5)
-					for (int i = 0; i < value.length; i++)
-						for (int j = 0; j < value[0].length; j++)
-							value[i][j] = 0;
+					value[0][0] = 0;
 				else
-					for (int i = 0; i < value.length; i++)
-						for (int j = 0; j < value[0].length; j++)
-							value[i][j] = 1;
+					value[0][0] = 1;
 			}
 		}
 		activated = true;

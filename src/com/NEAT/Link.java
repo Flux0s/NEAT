@@ -48,6 +48,12 @@ class Link {
 		return (output);
 	}
 
+	public void randomizeWeight() {
+		weight = Math.random() * 3 - 1;
+		if (weight > 1)
+			weight = Math.floor(weight);
+	}
+
 	public double getWeight() {
 		return (weight);
 	}
@@ -62,5 +68,9 @@ class Link {
 
 	public int getID() {
 		return (geneNum);
+	}
+
+	public void setEnabled(boolean en) {
+		enabled = en;
 	}
 }

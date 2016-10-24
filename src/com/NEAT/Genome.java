@@ -38,7 +38,6 @@ class Genome {
 	}
 
 	private ArrayList<Rectangle> findOptimalInputs(ArrayList<Rectangle> big) {
-		//TODO: Determine the optimal size and positioning of the specified number of screen divisions.
 		if (big.size() < NEATAI.NUMINPUTNODES)
 			return (findOptimalInputs(splitRectangles(big)));
 		else
@@ -84,7 +83,7 @@ class Genome {
 	public Genome(Genome base, boolean isLink) {
 	}
 
-	public void calculateOutput() {
+	public void output() {
 		while (unactivated()) {
 			Iterator it = genes.entrySet().iterator();
 			while (it.hasNext()) {
@@ -110,7 +109,24 @@ class Genome {
 				}
 			}
 		}
-		//TODO: Actually implement the AI to push the specified keys here.
+		Iterator it = genes.entrySet().iterator();
+		ArrayList<Node> nodes = new ArrayList<Node>();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			Node out = (Node) pair.getKey();
+			nodes.add((Node) it.next());
+		}
+		for (int i = nodes.size() - outputKeys.length; i < nodes.size(); i++) {
+			Robot keyboard = null;
+			try {
+				keyboard = new Robot();
+			} catch (Exception ignore) {
+			}
+			if (nodes.get(i).getValue()[0][0] == 1) {
+				keyboard.keyPress(i - nodes.size() - outputKeys.length);
+				keyboard.keyRelease(i - nodes.size() - outputKeys.length);
+			}
+		}
 	}
 
 	public int size() {
