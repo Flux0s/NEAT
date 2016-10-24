@@ -1,1 +1,1 @@
-C:\Users\Jason Owens\IdeaProjects\NEAT\DefaultFile.txt
+DefaultFile.txt

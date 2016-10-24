@@ -24,9 +24,10 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 
 	private NEATAI AI;
 	private static Thread t1;
-	Rectangle screenCapture;
+	private Rectangle screenCapture;
 	private boolean selectingKeys;
 	private ArrayList<Character> keys;
+	private static boolean enterFitness;
 
 	private NEATLauncher() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -172,9 +173,16 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 					updateConsole("Please Select the type of input below.");
 					return;
 				}
-				String quickPath = ((String) runningPaths.getSelectedItem()).trim();
-				if (quickPath.equals(""))
-					quickPath = DEFAULT_FILE;
+				String quickPath;
+				if (runningPaths.getSelectedItem() == null) {
+					updateConsole("Please type a path or file name into the box below and then press 'ENTER'.");
+					return;
+				} else {
+					quickPath = ((String) runningPaths.getSelectedItem()).trim();
+					if (quickPath.equals("")) {
+						quickPath = DEFAULT_FILE;
+					}
+				}
 				testFile = NEATAI.createNEATSaveFile(quickPath);
 				if (testFile == null) {
 					updateConsole("Please enter or select a valid NEAT save file");
@@ -192,8 +200,11 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 				}
 			} else {
 				updateConsole("Saving and Stopping Program Now!");
-//				NEATAI.save = true;
-//				while (!NEATAI.finished) ;
+				try {
+					AI.join();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 				System.exit(0);
 			}
 		}
@@ -257,7 +268,8 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 				updateConsole(keys.get(keys.size() - 1) + " Removed from list of outputs");
 				keys.remove(keys.size() - 1);
 				String outs = ("Outputs so far: ");
-				for (Character key : keys) outs += key + " ";
+				for (Character key : keys)
+					outs += key + " ";
 				updateConsole(outs);
 			} else if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 				updateConsole("Output selection finished.");
@@ -270,9 +282,12 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 			} else {
 				keys.add(e.getKeyChar());
 				String outs = ("Outputs so far: ");
-				for (Character key : keys) outs += key + " ";
+				for (Character key : keys)
+					outs += key + " ";
 				updateConsole(outs);
 			}
+		} else if (enterFitness) {
+
 		}
 
 	}
@@ -284,8 +299,8 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 
 	//Temporarily unimplemented
 	public class NEATBattleship extends ComputerBattleshipPlayer {
-			/*
-			public NEATBattleship() {
+	        /*
+	        public NEATBattleship() {
 				super("NEAT Battleship");
 			}
 
@@ -303,7 +318,7 @@ class NEATLauncher extends JFrame implements ActionListener, KeyListener {
 
 	public static void main(String[] args) throws IOException {
 		NEATLauncher launcher = new NEATLauncher();
-		t1 = new Thread() {
+		launcher.t1 = new Thread() {
 			public void run() {
 				Rectangle screenCap = null;
 				try {

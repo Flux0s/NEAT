@@ -3,7 +3,6 @@ package com.NEAT;
 /**
  * Represents a gene in the genome and contains the node that passes it a normalized value
  * Each Gene, or Link, is represented individually by an innovation number
- * s
  */
 
 class Link {
@@ -25,14 +24,22 @@ class Link {
 		weight = 1.0;
 	}
 
-	//Increments the total number of genes greated in the NEAT by one
+	//Used to create a copy of a link that has previously been created
+	public Link(Link copiedLink) {
+		innovation = copiedLink.getID();
+		preCondition = copiedLink.getPre();
+		weight = copiedLink.getWeight();
+		enabled = copiedLink.isEnabled();
+	}
+
+	//Increments the total number of genes created in the NEAT by one
 	private static int innovate() {
 		return (innovation++);
 	}
 
 	//This method will throw an exception if the previous node in the sequence has not been activated
 	public double[][] calculate() throws Exception {
-		if (preCondition.activated)
+		if (preCondition.activated())
 			throw new Exception();
 		double output[][] = preCondition.getValue();
 		for (int i = 0; i < output.length; i++)
@@ -41,11 +48,19 @@ class Link {
 		return (output);
 	}
 
-	public void setWeight(double in) {
-		weight = in;
+	public double getWeight() {
+		return (weight);
 	}
 
-	public boolean getEnabled() {
+	public boolean isEnabled() {
 		return (enabled);
+	}
+
+	public Node getPre() {
+		return (new Node(preCondition));
+	}
+
+	public int getID() {
+		return (geneNum);
 	}
 }

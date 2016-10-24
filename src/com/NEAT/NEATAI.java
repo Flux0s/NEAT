@@ -4,17 +4,19 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
-class NEATAI implements Runnable {
-	public static boolean save, finished;
+class NEATAI extends Thread {
+	public static boolean save;
 	private String path;
 	private ArrayList<Generation> generations;
-	private static final int POPULATION = 20;
+	public static final int POPULATION = 20, NUMINPUTNODES = 20;
 	private char[] outputs;
 	private Rectangle screen;
 	private static final String SIGNATURE = "82356987109892847569812709846840957890879283123050399846924597293879";
 
 	NEATAI(Rectangle screenIn, char output[], String filePath) {
 		save = false;
+		//TODO: reset the selected screen size to be easily divided into the specified number of sections.
+		screen = screenIn;
 		outputs = output;
 		path = filePath;
 		generations = new ArrayList<Generation>();
@@ -69,29 +71,38 @@ class NEATAI implements Runnable {
 		PrintWriter oStream = null;
 		try {
 			oStream = new PrintWriter(new FileWriter(NEAT));
-			oStream.println(generations.size() + "\n");
-
+			oStream.println(this);
 		} catch (IOException ignored) {
 		} finally {
 			if (oStream != null)
 				oStream.close();
 		}
-
 	}
 
 	//Loads a NEATAI from the specified path
-	private void load() {
-		File NEAT = new File(path);
+	private void load(File NEAT) {
+//		TODO: code the load method.
 	}
 
 	@Override
 	public void run() {
-//		while (!save) {
-//			generations.add(new Generation());
-//			generations.get(generations.size() - 1).run();
-//		}
-//		save();
-//		finished = true;
+		File NEAT = new File(path);
+		if (NEATAI.isSavedNEAT(NEAT))
+			load(NEAT);
+		else
+			generations.add(new Generation(screen, outputs));
+		while (!save) {
+			generations.get(generations.size() - 1).run();
+			try {
+				sleep(1000);
+			} catch (Exception ignore) {
+			}
+		}
+		try {
+			generations.get(generations.size() - 1).join();
+		} catch (Exception ignore) {
+		}
+		save();
 	}
 
 	//This returns the number of generations followed by each generation with a space between them

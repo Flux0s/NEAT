@@ -1,13 +1,19 @@
 package com.NEAT;
 
+import java.awt.*;
 import java.util.ArrayList;
 
-class Generation implements Runnable {
+class Generation extends Thread {
 
 	private ArrayList<Species> species;
+	private Rectangle screen;
+	private char[] output;
+	private int maxPop;
 
-	public Generation() {
-
+	public Generation(Rectangle screenIn, char[] outputKeys) {
+		screen = screenIn;
+		output = outputKeys;
+		maxPop = NEATAI.POPULATION;
 	}
 
 
