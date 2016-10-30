@@ -20,7 +20,7 @@ class Generation extends Thread {
 	@Override
 	public void run() {
 		while (!NEATAI.save) {
-
+			//TODO: call the appropriate methods of genomes and species in order.
 		}
 	}
 }

@@ -18,14 +18,14 @@ class Link {
 	private boolean enabled;
 
 	//Used to create an new link for the first time
-	public Link(Node pre) {
+	Link(Node pre) {
 		geneNum = innovate();
 		preCondition = pre;
 		weight = 1.0;
 	}
 
 	//Used to create a copy of a link that has previously been created
-	public Link(Link copiedLink) {
+	Link(Link copiedLink) {
 		innovation = copiedLink.getID();
 		preCondition = copiedLink.getPre();
 		weight = copiedLink.getWeight();
@@ -38,7 +38,7 @@ class Link {
 	}
 
 	//This method will throw an exception if the previous node in the sequence has not been activated
-	public double[][] calculate() throws Exception {
+	double[][] calculate() throws Exception {
 		if (preCondition.activated())
 			throw new Exception();
 		double output[][] = preCondition.getValue();
@@ -48,29 +48,38 @@ class Link {
 		return (output);
 	}
 
-	public void randomizeWeight() {
+	void randomizeWeight() {
 		weight = Math.random() * 3 - 1;
 		if (weight > 1)
 			weight = Math.floor(weight);
 	}
 
-	public double getWeight() {
+	double getWeight() {
 		return (weight);
 	}
 
-	public boolean isEnabled() {
+	public void setWeight(double weightIn) {
+		weight = weightIn;
+	}
+
+	boolean isEnabled() {
 		return (enabled);
 	}
 
-	public Node getPre() {
+	Node getPre() {
 		return (new Node(preCondition));
 	}
 
-	public int getID() {
+	int getID() {
 		return (geneNum);
 	}
 
-	public void setEnabled(boolean en) {
+	void setEnabled(boolean en) {
 		enabled = en;
+	}
+
+	void setPreCondition(Node newPre) {
+		preCondition = newPre;
+		geneNum = innovate();
 	}
 }

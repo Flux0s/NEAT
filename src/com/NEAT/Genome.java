@@ -31,10 +31,70 @@ class Genome {
 		screenSections.add(screen);
 		ArrayList<Rectangle> optimal = findOptimalInputs(screenSections);
 		for (int i = 0; i < optimal.size(); i++)
-			genes.put(new Node(Node.INPUT, optimal.get(i)), null);
+			genes.put(new Node(Node.INPUT, optimal.get(i)), new ArrayList<Link>());
 		for (int i = 0; i < outputKeys.length; i++) {
-			genes.put(new Node(Node.OUTPUT, new Rectangle()), null);
+			genes.put(new Node(Node.OUTPUT, new Rectangle()), new ArrayList<Link>());
 		}
+	}
+
+	// Use if mutation has been determined as true
+	public void mutateGenome(Genome base, boolean isLink) {
+		Map.Entry openLink = findOpenLinkSpace();
+		if (isLink && openLink != null) {
+			genes.replace((Node) openLink.getKey(), (ArrayList<Link>) openLink.getValue());
+		} else if (getGenes().size() < 0) {
+			Node newNode = new Node(Node.HIDDEN, new Rectangle(getNodes().get(0).getSection()));
+			Link split = getGenes().get((int) (Math.random() * getGenes().size()));
+			Iterator it = genes.entrySet().iterator();
+			while (it != null) {
+				Map.Entry pair = (Map.Entry) it.next();
+				links = (ArrayList<Link>) pair.getValue();
+				for (int i = 0; i < links.size(); i++) {
+					if (links.get(i) == split) {
+						//Creates a new link in the place of a random previous link with the new node as destination
+						ArrayList<Link> newNodeLinks = new ArrayList<>();
+						newNodeLinks.add(new Link(links.get(i).getPre()));
+						//Disables the previous link
+						links.get(i).setEnabled(false);
+						//Searches for the old link's destination to add a new link from the new node to the old destination
+						for (int j = 0; j < getNodes().size(); j++) {
+							Node checkNode = getNodes().get(j);
+							for (int k = 0; k < genes.get(checkNode).size(); k++)
+								if (genes.get(checkNode).get(k) == links.get(i)) {
+									ArrayList<Link> replacement = genes.get(checkNode);
+									replacement.add(new Link(newNode));
+									genes.replace(checkNode, replacement);
+								}
+						}
+						genes.put(newNode, newNodeLinks);
+						it = null;
+					}
+				}
+			}
+		}
+	}
+
+	private Map.Entry findOpenLinkSpace() {
+		Iterator it = genes.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			Node node = (Node) pair.getKey();
+			ArrayList<Link> links = (ArrayList<Link>) pair.getValue();
+			if (links.size() < getNodes().size() - 1) {
+				//There is an opportunity for a new node
+				Iterator it2 = genes.entrySet().iterator();
+				Node check = null;
+				while (check != node) {
+					check = (Node) it2.next();
+				}
+				links.add(new Link(check));
+				Map<Node, ArrayList<Link>> temp = new HashMap<>();
+				temp.put(node, links);
+				it2 = temp.entrySet().iterator();
+				return ((Map.Entry) it2.next());
+			}
+		}
+		return (null);
 	}
 
 	private ArrayList<Rectangle> findOptimalInputs(ArrayList<Rectangle> big) {
@@ -62,11 +122,6 @@ class Genome {
 		return (small);
 	}
 
-	// Used during crossover
-	public Genome(ArrayList<Link> geneIn, ArrayList<Node> nodeIn) {
-
-	}
-
 	private boolean unactivated() {
 		Iterator it = genes.entrySet().iterator();
 		while (it.hasNext()) {
@@ -76,11 +131,6 @@ class Genome {
 			}
 		}
 		return (true);
-	}
-
-
-	// Use if mutation has been determined as true
-	public Genome(Genome base, boolean isLink) {
 	}
 
 	public void output() {
@@ -143,5 +193,14 @@ class Genome {
 
 	public ArrayList<Link> getGenes() {
 		return (links);
+	}
+
+	public ArrayList<Node> getNodes() {
+		ArrayList<Node> nodes = new ArrayList<Node>();
+		Iterator it = genes.entrySet().iterator();
+		while (it.hasNext()) {
+			nodes.add((Node) it.next());
+		}
+		return nodes;
 	}
 }

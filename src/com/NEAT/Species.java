@@ -7,6 +7,8 @@ package com.NEAT;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Species {
 	private static final double SPECIATIONTHRESHOLD = 3.0;
@@ -69,11 +71,11 @@ public class Species {
 		return (true);
 	}
 
+	//TODO: Fix this method.
 	private Genome crossOver(Genome G1, Genome G2) {
 		int excessThreshold;
 		Genome child = null, fit = G2, weak = G1, small = G1, large = G2;
-		ArrayList<Node> nodes = new ArrayList<Node>();
-		ArrayList<Link> links = new ArrayList<Link>();
+		Map<Node, ArrayList<Link>> genes = new HashMap<Node, ArrayList<Link>>();
 		if (G1.getFitness() > G2.getFitness()) {
 			fit = G1;
 			weak = G2;
@@ -82,6 +84,7 @@ public class Species {
 			large = G1;
 			small = G2;
 		}
+		//The ID of the last gene in the smaller genome
 		excessThreshold = small.getGenes().get(small.size()).getID();
 
 		for (int i = 0; i < large.size(); i++)
@@ -101,8 +104,8 @@ public class Species {
 						// Decide whether to inherit the gene
 						if (Math.random() < 0.5)
 							links.add(new Link(large.getGenes().get(i)));
-						else
-							links.add(new Link(fit.getGenes().get(i)));
+//						else
+//							links.add(new Link(fit.getGenes().get(i)));
 				}
 			}
 		// After Genome construction determine if there is a mutation
