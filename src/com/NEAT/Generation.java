@@ -3,7 +3,7 @@ package com.NEAT;
 import java.awt.*;
 import java.util.ArrayList;
 
-class Generation extends Thread {
+class Generation {
 
 	private ArrayList<Species> species;
 	private Rectangle screen;
@@ -16,9 +16,7 @@ class Generation extends Thread {
 		maxPop = NEATAI.POPULATION;
 	}
 
-
-	@Override
-	public void run() {
+	public void startGeneration() {
 		while (!NEATAI.save) {
 			//TODO: call the appropriate methods of genomes and species in order.
 		}

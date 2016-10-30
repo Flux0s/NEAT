@@ -96,19 +96,10 @@ class NEATAI extends Thread {
 		File NEAT = new File(path);
 //		if (NEATAI.isSavedNEAT(NEAT))
 //			load(NEAT);
-//		else
+//		else {
 		generations.add(new Generation(screen, outputs));
-		while (!save) {
-			generations.get(generations.size() - 1).run();
-			try {
-				sleep(1000);
-			} catch (Exception ignore) {
-			}
-		}
-		try {
-			generations.get(generations.size() - 1).join();
-		} catch (Exception ignore) {
-		}
+		generations.get(generations.size() - 1).startGeneration();
+//	}
 		save();
 	}
 

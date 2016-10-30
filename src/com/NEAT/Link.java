@@ -12,15 +12,16 @@ class Link {
 	private int geneNum;
 	//The value multiplied by the previous node's value
 	private double weight;
-	//The node that provides a value to the link
-	private Node preCondition;
+	//The node that gives a value to the
+	private Node preCondition, postCondition;
 	//Used to show whether or not the
 	private boolean enabled;
 
 	//Used to create an new link for the first time
-	Link(Node pre) {
+	Link(Node pre, Node post) {
 		geneNum = innovate();
 		preCondition = pre;
+		postCondition = post;
 		weight = 1.0;
 	}
 
@@ -28,6 +29,7 @@ class Link {
 	Link(Link copiedLink) {
 		innovation = copiedLink.getID();
 		preCondition = copiedLink.getPre();
+		postCondition = copiedLink.getPost();
 		weight = copiedLink.getWeight();
 		enabled = copiedLink.isEnabled();
 	}
@@ -81,5 +83,9 @@ class Link {
 	void setPreCondition(Node newPre) {
 		preCondition = newPre;
 		geneNum = innovate();
+	}
+
+	public Node getPost() {
+		return (new Node(postCondition));
 	}
 }

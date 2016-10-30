@@ -112,9 +112,9 @@ public class Species {
 		if (Math.random() <= MUTATECHANCE)
 			// Determine if the mutation is a link or a node
 			if (Math.random() <= 0.5)
-				child = new Genome(child, true);
+				child.mutateGenome(child, true);
 			else
-				child = new Genome(child, false);
+				child.mutateGenome(child, false);
 		randomizeGenes(child);
 		return (child);
 	}

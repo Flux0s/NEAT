@@ -20,7 +20,7 @@ class Genome {
 	private ArrayList<Link> links;
 
 	//Used to create the first genome in the NEAT
-	public Genome(Rectangle screen, char[] output) {
+	Genome(Rectangle screen, char[] output) {
 		genes = new HashMap<Node, ArrayList<Link>>();
 		links = new ArrayList<Link>();
 		Iterator it = genes.entrySet().iterator();
@@ -30,15 +30,16 @@ class Genome {
 		ArrayList<Rectangle> screenSections = new ArrayList<Rectangle>();
 		screenSections.add(screen);
 		ArrayList<Rectangle> optimal = findOptimalInputs(screenSections);
-		for (int i = 0; i < optimal.size(); i++)
-			genes.put(new Node(Node.INPUT, optimal.get(i)), new ArrayList<Link>());
-		for (int i = 0; i < outputKeys.length; i++) {
+		for (Rectangle anOptimal : optimal)
+			genes.put(new Node(Node.INPUT, anOptimal), new ArrayList<Link>());
+		for (char outputKey : outputKeys) {
 			genes.put(new Node(Node.OUTPUT, new Rectangle()), new ArrayList<Link>());
 		}
+		outputKeys = output;
 	}
 
 	// Use if mutation has been determined as true
-	public void mutateGenome(Genome base, boolean isLink) {
+	void mutateGenome(Genome base, boolean isLink) {
 		Map.Entry openLink = findOpenLinkSpace();
 		if (isLink && openLink != null) {
 			genes.replace((Node) openLink.getKey(), (ArrayList<Link>) openLink.getValue());
