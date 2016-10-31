@@ -134,6 +134,7 @@ class Genome {
 		return (true);
 	}
 
+	//This begins the process of determining the keyboard output and automatically pressing assigned keys based on screen at the time of running
 	public void output() {
 		while (unactivated()) {
 			Iterator it = genes.entrySet().iterator();
