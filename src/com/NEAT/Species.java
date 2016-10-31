@@ -66,9 +66,7 @@ public class Species {
 	private boolean isInSpecies(Genome newGenome) {
 		double compatabilityDiffrence;
 		compatabilityDiffrence = compatabilityCheck(newGenome, members.get((int) (Math.random() * members.size())));
-		if (compatabilityDiffrence >= SPECIATIONTHRESHOLD)
-			return (false);
-		return (true);
+		return (compatabilityDiffrence < SPECIATIONTHRESHOLD);
 	}
 
 	//TODO: Fix this method.
@@ -108,6 +106,8 @@ public class Species {
 //							links.add(new Link(fit.getGenes().get(i)));
 				}
 			}
+
+
 		// After Genome construction determine if there is a mutation
 		if (Math.random() <= MUTATECHANCE)
 			// Determine if the mutation is a link or a node

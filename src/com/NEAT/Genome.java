@@ -54,7 +54,7 @@ class Genome {
 					if (links.get(i) == split) {
 						//Creates a new link in the place of a random previous link with the new node as destination
 						ArrayList<Link> newNodeLinks = new ArrayList<>();
-						newNodeLinks.add(new Link(links.get(i).getPre()));
+						newNodeLinks.add(new Link(links.get(i).getPre(), links.get(i).getPost()));
 						//Disables the previous link
 						links.get(i).setEnabled(false);
 						//Searches for the old link's destination to add a new link from the new node to the old destination
@@ -63,7 +63,7 @@ class Genome {
 							for (int k = 0; k < genes.get(checkNode).size(); k++)
 								if (genes.get(checkNode).get(k) == links.get(i)) {
 									ArrayList<Link> replacement = genes.get(checkNode);
-									replacement.add(new Link(newNode));
+									replacement.add(new Link(newNode, checkNode));
 									genes.replace(checkNode, replacement);
 								}
 						}
@@ -88,7 +88,7 @@ class Genome {
 				while (check != node) {
 					check = (Node) it2.next();
 				}
-				links.add(new Link(check));
+				links.add(new Link(check, node));
 				Map<Node, ArrayList<Link>> temp = new HashMap<>();
 				temp.put(node, links);
 				it2 = temp.entrySet().iterator();
