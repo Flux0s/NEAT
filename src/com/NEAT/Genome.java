@@ -39,6 +39,7 @@ class Genome {
 	}
 
 	// Use if mutation has been determined as true
+	// TODO: Fix the logic of this method to use the new implementation of Links
 	void mutateGenome(Genome base, boolean isLink) {
 		Map.Entry openLink = findOpenLinkSpace();
 		if (isLink && openLink != null) {
